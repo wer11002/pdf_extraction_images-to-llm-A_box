@@ -1,0 +1,353 @@
+[
+  {
+    "paper_id": "paper1",
+    "datasets": [
+      "/Users/guide/workspace/univercity/year3_sem2/ceipp5/extracted_paper1_enhanced.pdf.txt#L4-5",
+      "BDCloud",
+      "Digital Ocean",
+      "ImageNet",
+      "Level-0",
+      "Level-1",
+      "Prometheus",
+      "cSysGuard"
+    ],
+    "experiments": [
+      {
+        "model": "Decision Trees",
+        "results": {
+          "macro-averaged F1 score": 89.79,
+          "Precisionmacro": 0.85,
+          "Recallmacro": 0.9,
+          "F1-Scoremacro": 0.87,
+          "F1 Score": 0.8812,
+          "Precision": 0.8856,
+          "Recall": 0.8802
+        }
+      },
+      {
+        "model": "cSysGuard",
+        "results": {
+          "RMSE": null,
+          "F1 Score": null
+        }
+      },
+      {
+        "model": "ARIMA",
+        "results": {
+          "F1 Score": 0.82,
+          "RMSE": 0.15
+        }
+      },
+      {
+        "model": "GRU",
+        "results": {
+          "F1 Score": 0.82,
+          "RMSE": 0.12
+        }
+      },
+      {
+        "model": "LSTM",
+        "results": {
+          "F1 Score": 0.82,
+          "RMSE": 0.11
+        }
+      },
+      {
+        "model": "Support Vector Machines",
+        "results": {
+          "Precisionmacro": 0.78,
+          "Recallmacro": 0.82,
+          "F1-Scoremacro": 0.8
+        }
+      },
+      {
+        "model": "K-Nearest Neighbors",
+        "results": {
+          "Precisionmacro": 0.72,
+          "Recallmacro": 0.76,
+          "F1-Scoremacro": 0.74,
+          "F1 Score": 0.7736,
+          "Precision": 0.8372,
+          "Recall": 0.7819
+        }
+      },
+      {
+        "model": "Logistic Regression",
+        "results": {
+          "Precisionmacro": 0.68,
+          "Recallmacro": 0.72,
+          "F1-Scoremacro": 0.7,
+          "F1 Score": 0.8368,
+          "Precision": 0.838,
+          "Recall": 0.838
+        }
+      },
+      {
+        "model": "Neural Networks",
+        "results": {
+          "Precisionmacro": 0.85,
+          "Recallmacro": 0.9,
+          "F1-Scoremacro": 0.87,
+          "F1 Score": 0.806,
+          "Precision": 0.8515,
+          "Recall": 0.8159
+        }
+      },
+      {
+        "model": "RNN",
+        "results": {
+          "RMSE": 0.13
+        }
+      },
+      {
+        "model": "SARIMA",
+        "results": {
+          "RMSE": 0.14
+        }
+      },
+      {
+        "model": "Support Vector Machine",
+        "results": {
+          "F1 Score": 0.8223,
+          "Precision": 0.8255,
+          "Recall": 0.8231
+        }
+      },
+      {
+        "model": "Tuned Decision Trees",
+        "results": {
+          "F1 Score": 0.8979,
+          "Precision": 0.9012,
+          "Recall": 0.8968
+        }
+      },
+      {
+        "model": "Model Insight Prediction Process",
+        "results": {
+          "F1 Score": 1.061,
+          "Precision": 0.382,
+          "Recall": 0.362
+        }
+      },
+      {
+        "model": "Refinement Process",
+        "results": {
+          "F1 Score": 141.84,
+          "Precision": 74.29,
+          "Recall": 132.4
+        }
+      },
+      {
+        "model": "CPU Request (percent)",
+        "results": {
+          "F1 Score": 4.6914,
+          "Precision": 6.6708,
+          "Recall": 4.9131
+        }
+      },
+      {
+        "model": "Memory Request (percent)",
+        "results": {
+          "F1 Score": 1.4943,
+          "Precision": 2.1594,
+          "Recall": 1.5442
+        }
+      },
+      {
+        "model": "Inbound",
+        "results": {
+          "F1 Score": 2778.2,
+          "Precision": 4052.5,
+          "Recall": 2887.4
+        }
+      },
+      {
+        "model": "Outbound",
+        "results": {
+          "F1 Score": 2369.0,
+          "Precision": 3536.6,
+          "Recall": 2462.9
+        }
+      },
+      {
+        "model": "Response Time (ms)",
+        "results": {
+          "F1 Score": 640.41,
+          "Precision": 978.21,
+          "Recall": 780.79
+        }
+      },
+      {
+        "model": "Tuned RNN",
+        "results": {
+          "F1 Score": 4.691,
+          "Precision": 4.695,
+          "Recall": 4.736
+        }
+      },
+      {
+        "model": "Level-0: Tuned RNN",
+        "results": {
+          "F1 Score": 4.691,
+          "Precision": 4.695,
+          "Recall": 4.736
+        }
+      },
+      {
+        "model": "Level-1: Tuned RF",
+        "results": {
+          "F1 Score": 4.684,
+          "Precision": 4.695,
+          "Recall": 4.706
+        }
+      },
+      {
+        "model": "Memory Request",
+        "results": {
+          "F1 Score": 1.4943,
+          "Precision": 2.1594,
+          "Recall": 1.5442
+        }
+      },
+      {
+        "model": "TPS",
+        "results": {
+          "F1 Score": 0.6346,
+          "Precision": 0.9117,
+          "Recall": 0.6377
+        }
+      },
+      {
+        "model": "Response Time",
+        "results": {
+          "F1 Score": 640.41,
+          "Precision": 978.21,
+          "Recall": 780.79
+        }
+      },
+      {
+        "model": "CNN",
+        "results": {}
+      },
+      {
+        "model": "Convolutional Neural Networks",
+        "results": {}
+      },
+      {
+        "model": "ETS",
+        "results": {}
+      },
+      {
+        "model": "Exponential Smoothing",
+        "results": {}
+      },
+      {
+        "model": "Feedforward Neural Networks",
+        "results": {}
+      },
+      {
+        "model": "Gated Recurrent Unit",
+        "results": {}
+      },
+      {
+        "model": "Linear Regression",
+        "results": {}
+      },
+      {
+        "model": "Long Short-Term Memory",
+        "results": {}
+      },
+      {
+        "model": "RF",
+        "results": {}
+      },
+      {
+        "model": "Random Forest",
+        "results": {}
+      },
+      {
+        "model": "Recurrent Neural Networks",
+        "results": {}
+      },
+      {
+        "model": "SVM",
+        "results": {}
+      },
+      {
+        "model": "TCN",
+        "results": {}
+      },
+      {
+        "model": "Temporal Convolutional Networks",
+        "results": {}
+      }
+    ]
+  },
+  {
+    "paper_id": "paper2",
+    "datasets": [
+      "COCO",
+      "KITTI",
+      "MOT17",
+      "MOT20",
+      "Four different surveillance datasets"
+    ],
+    "experiments": [
+      {
+        "model": "YOLOv8",
+        "results": {}
+      },
+      {
+        "model": "DeepSORT",
+        "results": {
+          "MOTA_Dataset_1": 1.0,
+          "MOTA_Dataset_2": 1.0,
+          "MOTA_Dataset_3": 0.96,
+          "MOTA_Dataset_4": 0.9
+        }
+      },
+      {
+        "model": "OC-SORT",
+        "results": {
+          "MOTA_Dataset_1": 1.0,
+          "MOTA_Dataset_2": 0.76,
+          "MOTA_Dataset_3": 0.9,
+          "MOTA_Dataset_4": 0.83
+        }
+      }
+    ]
+  },
+  {
+    "paper_id": "paper3",
+    "datasets": [
+      "ImageNet",
+      "Real free-flow toll systems dataset"
+    ],
+    "experiments": [
+      {
+        "model": "VGG16",
+        "results": {}
+      },
+      {
+        "model": "InceptionV3",
+        "results": {}
+      },
+      {
+        "model": "Yolo11m-cls",
+        "results": {}
+      },
+      {
+        "model": "ResNet50",
+        "results": {}
+      },
+      {
+        "model": "CTv1",
+        "results": {
+          "Accuracy": 0.99,
+          "Processing Time (s)": 1.0,
+          "Energy (mWh)": 25.0
+        }
+      }
+    ]
+  }
+]

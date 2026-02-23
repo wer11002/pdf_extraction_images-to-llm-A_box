@@ -1,0 +1,811 @@
+--- Page 1 ---
+Citation: Sharma, N.; Baral, S.; Paing,
+M.P.; Chawuthai, R. Parking Time
+Violation Tracking Using YOLOv8
+and Tracking Algorithms. Sensors
+2023, 23, 5843. https://doi.org/
+10.3390/s23135843
+Academic Editor: Ikhlas
+Abdel-Qader
+Received: 8 May 2023
+Revised: 5 June 2023
+Accepted: 16 June 2023
+Published: 23 June 2023
+Copyright:
+© 2023 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed
+under
+the
+terms
+and
+conditions of the Creative Commons
+Attribution (CC BY) license (https://
+creativecommons.org/licenses/by/
+4.0/).
+sensors
+Article
+Parking Time Violation Tracking Using YOLOv8 and
+Tracking Algorithms
+Nabin Sharma 1
+, Sushish Baral 1
+, May Phu Paing 2
+and Rathachai Chawuthai 3,*
+1
+Department of Robotics and AI, School of Engineering, King Mongkut’s Institute of Technology Ladkrabang,
+Bangkok 10520, Thailand; 64601008@kmitl.ac.th (N.S.); sushish.ba@kmitl.ac.th (S.B.)
+2
+Department of Biomedical Engineering, School of Engineering, King Mongkut’s Institute of
+Technology Ladkrabang, Bangkok 10520, Thailand; may.pa@kmitl.ac.th
+3
+Department of Computer Engineering, School of Engineering, King Mongkut’s Institute of Technology
+Ladkrabang, Bangkok 10520, Thailand
+*
+Correspondence: rathachai.ch@kmitl.ac.th
+Abstract: The major problem in Thailand related to parking is time violation. Vehicles are not
+allowed to park for more than a speciﬁed amount of time. Implementation of closed-circuit television
+(CCTV) surveillance cameras along with human labor is the present remedy. However, this paper
+presents an approach that can introduce a low-cost time violation tracking system using CCTV, Deep
+Learning models, and object tracking algorithms. This approach is fairly new because of its appliance
+of the SOTA detection technique, object tracking approach, and time boundary implementations.
+YOLOv8, along with the DeepSORT/OC-SORT algorithm, is utilized for the detection and tracking
+that allows us to set a timer and track the time violation. Using the same apparatus along with
+Deep Learning models and algorithms has produced a better system with better performance. The
+performance of both tracking algorithms was well depicted in the results, obtaining MOTA scores
+of (1.0, 1.0, 0.96, 0.90) and (1, 0.76, 0.90, 0.83) in four different surveillance data for DeepSORT and
+OC-SORT, respectively.
+Keywords: DeepSORT; OC-SORT; object detection; tracking algorithm; vehicle tracking; YOLOv8
+1. Introduction
+In Thailand, due to the growing number of vehicular registrations, parking has become
+a serious issue and has introduced an unsolved challenge [1]. The rapid increase in car
+registrations in Thailand has led to parking problems in cities throughout Thailand. In order
+to meet the need for parking spaces, shopping malls and mini-marts are trying to effectively
+manage the limited number of parking spaces that are accessible to the public. In Thailand,
+mini-marts such as Tesco Express, 7-Eleven, and Mini Big C face a substantial parking
+problem due to the limited availability of parking spaces. In a fast-paced environment such
+as 7-Eleven with limited parking facilities, it is essential to track the parking time of each
+vehicle in the parking lot. This issue of parking violations has attracted the attention of
+many mini-mart executives and the general public.
+Parking violations include activities such as parking a vehicle in a restricted area
+and time limit violations. Figure 1 shows an example of the implementation of a time
+restriction parking rule in a mini-mart in Thailand. Most shopping malls and mini-marts
+use closed-circuit television (CCTV) in parking lots to observe parking time violations.
+Currently, parking violations are manually checked by the relevant authorities. However,
+these methods are expensive and incur high labor costs, due to the constant monitoring
+required to track incoming and outgoing vehicles. To address the parking space problem,
+various existing parking solutions have used IoT devices to provide drivers with real-time
+parking details [2]. However, using sensors and hardware, while providing accuracy, also
+Sensors 2023, 23, 5843. https://doi.org/10.3390/s23135843
+https://www.mdpi.com/journal/sensors
+
+--- Page 2 ---
+Sensors 2023, 23, 5843
+2 of 14
+requires constant maintenance, making it an unideal solution for mini-marts. A low cost
+parking violation detection system is still required.
+The majority of currently available research focuses on assisting drivers to locate
+parking spots. Numerous models have been developed to assist drivers with nearby
+parking spaces in real time [3]. However, there are very few studies that have been
+conducted to help authorities to manage parking spots effectively. Very few studies have
+been conducted regarding parking violations and time restrictions.
+Figure 1. Representative parking restriction image, imposing a parking time limit of 15 min for con-
+sumers.
+Over the past few years, mini-marts in Thailand have adopted the method of allocating
+a parking time of 15 min per vehicle outside their stores, in order to keep up with parking
+demand. However, this method has not been effective, as additional manpower is required
+to record the arrival time and departure time of each car.
+Recently, considerable effort has been made to use CCTV cameras to identify illegal
+parking practices. Many research studies have employed a Gaussian Mixture Model-based
+image segmentation approach to retrieve vehicle information [4,5]. Akhawaji et al. [4]
+further utilizing a Kalman ﬁlter to eliminate false alarms and enhance efﬁcient vehicle
+tracking. However, the effectiveness of this strategy might be affected if the lighting
+conditions in the operating area change. Apart from image processing algorithms, many
+Deep Learning algorithms have been deployed to detect parking violations. For instance,
+networks such as the Single Shot MultiBox Detector (SSD) and You Only Look Once (YOLO)
+have been implemented to identify parking violations [6–8].
+This paper introduces a real-time parking time violation tracking algorithm using
+closed-circuit cameras and DL models with a tracking algorithm to persist the information
+from one frame to its subsequent frame. The algorithm leverages the state-of-the-art object
+detection technique, YOLOv8, to identify vehicles within a parking lot. Each detected
+vehicle is then assigned a unique ID in the parking lot using DeepSORT/OC-SORT, enabling
+efﬁcient monitoring of parking time violations. To ensure good performance across varying
+levels of illumination, weather conditions, and short-term obstructions, optimal parameters
+were carefully selected for the algorithms. An important advantage of this algorithm
+is that it does not require prior knowledge about the Region of Interest (ROI), making it
+adaptable to various parking lot scenarios. This research paper presents the implementation
+of parking violation detection in a time-series context. The paper’s major contributions can
+be summarized as follows:
+(1) The proposed algorithm demonstrates effective vehicle detection and tracking
+across various natural conditions, exploring the SOTA object detection and tracking models;
+
+--- Page 3 ---
+Sensors 2023, 23, 5843
+3 of 14
+(2) The methodology exhibits an accurate and reliable solution to the parking time
+violation problem;
+(3) This paper introduces a frame-by-frame evaluation with respect to time, which is a
+new approach to the problem domain.
+The remaining sections of this paper are organized as follows. Section 2 reviews the
+background and literature related to object detection and object tracking. Section 3 describes
+the details of the proposed parking time violation process, including the experimental
+setup and experimental settings of parameters for the algorithms. Section 4 presents the
+results and discussion.
+2. Related Work
+Deep Learning applications have received signiﬁcant traction due to their extensive
+research and development. Deep Learning-based methods have been applied in many tasks,
+such as classiﬁcation [9], object detection [10], object tracking [11], and healthcare [12–14].
+The objective of parking time violation tracking is to identify parking time violations by
+vehicles, especially in mini-marts which have a limited parking time. The task involves
+implementation of object detection and object tracking. Therefore, the current literature on
+object detection and object tracking is discussed accordingly.
+2.1. Object Detection
+In its early years, the machine learning-based object detection pipeline consisted of
+two primary steps: ROI extraction and object classiﬁcation [15]. Based on Zhao et al. [16],
+object detection models consist of three phases: selection of region of interest, extraction of
+features, and, ﬁnally, classiﬁcation of objects. One common ROI extraction technique uses
+sliding windows that move various scales across an image. Exhaustive sliding is, however,
+very challenging to apply in practice due to its great processing complexity.
+Deep Learning algorithms are extensively implemented for object detection tasks.
+They can mainly be categorized into two types, as shown in Figure 2. You Only Look
+Once (YOLO) [17] and Single Shot MultiBox Detector (SSD) [18] consider detection tasks
+as a regression problem and are one stage networks. On the other hand, algorithms such
+as Region-Based CNN (RCNN) [10] ﬁrstly locate the region of interest, which is further
+classiﬁed into classes. As depicted in Figure 3, The R-CNN model uses a selective search
+algorithm to determine the number of candidates for bounding box object regions, and then
+features are fed into CNN, which acts as a feature extractor. Support Vector Machine (SVM)
+is used to classify whether the object is present within that candidate region by utilizing the
+retrieved features. R-CNN can perform well in various object detection tasks, but training
+these models takes signiﬁcant time, and the speed of detection is limited [19].
+Figure 2. Object detection algorithms.
+
+--- Page 4 ---
+Sensors 2023, 23, 5843
+4 of 14
+Figure 3. Flowchart of region-based CNN.
+To improve the speed of training and inference, one-stage detectors such as SSD and
+YOLO have been introduced for object detection tasks. Figure 4 shows the architecture
+of SSD Models. In SSD, CNN-based feature extractors are used. At the end of feature
+extraction, convolutional feature layers generate predictions at multiple scales. Since
+SSD does not use region based proposals, SSD models have increased detection speed,
+as opposed to two-stage detectors such as R-CNN. In this research work, YOLO was
+implemented for the object detection task. The details of the YOLO model are discussed
+accordingly in the Methodology section.
+Figure 4. Flowchart of Single Shot MultiBox Detector.
+One of the ﬁrst attempts to tackle the issue of parking lot monitoring using machine
+learning utilized color vector features on an SVM classiﬁer to distinguish parking spaces
+inside a parking lot in 2002 [20]. Based on a 3D model of parking spaces, Huang et al. [21]
+proposed a day and night operating parking space detection system using a Bayesian
+hierarchical framework. Apart from Deep Learning models, many image processing
+techniques have been implemented to solve parking space detection problems. For instance,
+Menéndez et al. [22] proposed temporal analysis of parking area video frames to identify
+vacant spaces. This method includes the process of background subtraction using the
+Gaussian mixture to identify and track vehicles in the parking lot. In addition, a transience
+map was created to observe incoming and outgoing vehicles. Xie et al. [7] proposed an
+optimized SSD to detect illegal vehicle parking from a video stream in a robust environment,
+achieving 99% accuracy.
+Recently, Patel and Meduri [23] presented an automatic parking space detection al-
+gorithm that comprised two steps. The ﬁrst step included vehicle detection with Faster
+R-CNN and YOLOv4, while vehicle tracking was used to differentiate between moving
+and stationary vehicles. Based on Patel and Meduri’s research [23], this technique reduced
+the amount of human effort required by up to 90%. Grbi´c and Koch [24] proposed occu-
+pancy classiﬁcation and a parking space detection algorithm, wherein parking spaces were
+determined as occupied or empty using a trained ResNet34 deep classiﬁer; they extensively
+evaluated this approach on publicly known parking datasets such as PKLot [25] and CN-
+RPark+EXT [26]. Chen et al. [27] implemented an enhanced SSD (Single Shot MultiBox
+Detector) algorithm for the quick recognition of vehicles in trafﬁc scenarios. For feature
+
+--- Page 5 ---
+Sensors 2023, 23, 5843
+5 of 14
+extraction, the authors used the MobileNet v2 network, which helped to improve the detec-
+tion accuracy of the algorithm. Experimental results showed that the proposed algorithm
+achieved 82.59% and 84.83% accuracy for the BDD100K and KITTI datasets, respectively.
+By introducing asymmetric convolution and a global point tracking module, Li et al. [28]
+proposed YOLO–GCC based on the YOLO algorithm and achieved an average accuracy of
+83.0% on the TSD–MAX dataset. Jung et al. [29] proposed classiﬁcation and localization
+of vehicles in trafﬁc monitoring, using ResNet50 for vehicle classiﬁcation, adding an opti-
+mized drop-down convolutional neural network (DropCNN) to improve the performance
+of classiﬁcation.
+2.2. Vehicle Tracking
+Object tracking is a technique for detecting objects across frames by utilizing their
+spatial and temporal characteristics. In its simplest form, the method consists of obtaining
+the initial set of detections, giving them distinct IDs, and following them over frames,
+which is the essence of object tracking. Over the last decade, object tracking methods have
+gained popularity in the ﬁelds of Deep Learning and computer vision.
+Single Object Tracking (SOT) and Multiple Object Tracking (MOT) are the two cat-
+egories into which object tracking can be subdivided [30]. A Multiple Object Tracking
+algorithm’s primary responsibility is to identify multiple objects in a frame, assign and
+preserve their identities, and follow the object’s trajectory across input frames.
+Object tracking has been used in many domains such as pedestrian tracking [31],
+vehicle tracking [32], and player tracking [33]. Parico and Ahamed [34] implemented
+YOLOv4 for pear detection and a multiple object tracking algorithm, DeepSORT, for pear
+tracking and counting. Hou et al. [32] proposed a tracking algorithm called DeepSORT
+and a low-conﬁdence search ﬁlter that reduced false detections produced by the original
+DeepSORT algorithm. To track vehicles detected by a YOLOv3 network, Liu and Liu [35]
+proposed 3-D constrained multiple kernels aided by Kalman ﬁltering. In this article, we
+focus on a closed-circuit television (CCTV)-based multiple object tracking technique, which
+allows identiﬁcation of multiple objects in a sequence of images. The effectiveness of
+such a tracking method depends on the quality of detection in various weather settings,
+the proportion of occlusion, and illumination change. Therefore, it is crucial to choose
+the best object detection and tracking algorithm. Aware of our objective, state-of-the-art
+tracking algorithms such as DeepSORT and OCSORT were implemented. Table 1 shows
+the benchmark results on the DanceTrack dataset. OC-SORT outperforms all the existing
+tracking algorithm in many metrics, such as HOTA, AssA and IDF1. This result shows
+strong evidence of the high performance of the OC-SORT Algorithm.
+Table 1. Results on the DanceTrack test set.
+Tracker
+HOTA
+DetA
+AssA
+MOTA
+IDF1
+SORT [36]
+47.9
+72.0
+31.2
+91.8
+50.8
+DeepSORT [11]
+45.6
+71.0
+29.7
+87.8
+47.9
+ByteTrack [37]
+47.3
+71.6
+31.4
+89.5
+52.5
+OC-SORT [38]
+54.6
+80.4
+40.2
+89.6
+54.6
+OCSORT + Linear Interp [38]
+55.1
+80.4
+40.4
+92.2
+54.9
+3. Proposed Parking Time Violation Algorithm
+The proposed algorithm utilizes a state-of-the-art object detection algorithm called
+YOLOv8 [39] for detecting vehicles. For tracking vehicles, two object tracking algorithms
+were implemented, Deep SORT (Simple Online Real Tracking) [11] and Observation-
+Centric SORT (OC-SORT) [38]. In-depth discussion of the algorithm is included in the
+subsection below.
+
+
+=== DETECTED IMAGE-BASED TABLES ===
+Caption: Table 1.
+Tracker HOT
+SORT [36] 47.9
+DeepSORT [11] 45.6
+ByteTrack [37] 47.3
+OC-SORT [38] 54.6
+OCSORT + Linear Interp [38] 55.1
+3. Proposed Parking Time Violation
+The proposed algorithm utilize
+YOLOvV8 [39] for detecting vehicles.
+were implemented, Deep SORT (Si
+Centric SORT (OC-SORT) [38]. In-d
+subsection below.
+===================================
+
+--- Page 6 ---
+Sensors 2023, 23, 5843
+6 of 14
+3.1. Dataset
+Due to limitations and privacy concerns, acquiring mini-mart data was not possible.
+As such, the dataset was comprised of video footage obtained from CCTV cameras installed
+at King Mongkut’s Institute of Technology, Ladkrabang (KMITL). The CCTV model utilized
+at KMITL is the Panasonic V series, which offers a 15–30 frames per second (FPS) capture
+rate and a 1080P resolution. These cameras are IP66 rated, providing resistance to water
+and dust.
+Data collection was conducted using 4 cameras placed at different locations within the
+university campus, all with a resolution of 1080P and a frame rate of 15 FPS. The selection
+of dataset locations was carefully carried out to incorporate diverse camera angles and
+viewpoints. The video samples within the dataset encompassed various daylight and
+weather settings, offering a comprehensive representation of the parking lot scenarios at
+KMITL.
+3.2. Vehicle Detection
+In 2015, Joseph Redmon and Ali Farhadi from the University of Washington created
+the cutting-edge object recognition algorithm called YOLO (You Only Look Once) [17].
+YOLO outperforms many other object detection algorithms such as R-CNN and DPM [17].
+YOLO sees the entire image during training and testing, in contrast to sliding window-
+and region proposal-based approaches, implicitly capturing contextual information about
+classes as well as their appearance. The initial version of YOLO had the ability to quickly
+recognize objects in images, but it had trouble locating smaller objects precisely. Since
+the data in our problem domain does not contain very small images, there is no problem
+using YOLO for this study. YOLO divides input images into a grid of dimensions M × M.
+For instance, a grid cell is in charge of detecting an object if its center falls inside that
+grid cell. Each grid cell predicts the bounding box and offers a conﬁdence score for the
+associated boxes. In YOLO, conﬁdence is described as Pr(Object) × IOU where Pr(Object)
+represents the probability of the presence of an object, and IOU represents the Intersection
+over Union (IOU), i.e., the overlap area between inference and ground truth. Each grid
+cell generates ﬁve predictions (x, y, w, h, and a conﬁdence score). Additionally, each grid
+produces p conditional class probabilities, expressed as Pr(Class|Object). Equation (2) below
+demonstrates the method to obtain class-speciﬁc conﬁdence scores for each box during the
+test phase.
+Classi × IOUtruth
+pred = Classi | Object × Object × IOUtruth
+pred
+(1)
+The ﬁnal layers predict both the coordinates of their bounding boxes and their associ-
+ated class probabilities. Then, the bounding boxes are normalized to fall between 0 and 1.
+All further layers increase non-linearity by using the leaky rectiﬁed linear activation func-
+tion, as described in Equation (2), with an exception of the ﬁnal layer, which employs a
+linear activation function:
+f (x) =
+(
+x,
+if x > 0.
+0.1x,
+otherwise.
+(2)
+In 2016, YOLOv2 was released, improving on the original model by including batch
+normalization, anchor boxes, and dimension clusters [40]. Similarly, YOLOv3 was released
+in 2018, improving the model’s performance by employing a more efﬁcient backbone
+network, incorporating a feature pyramid, and employing focal loss [41]. The initial model
+of YOLO had many successors, including YOLOv4, YOLOv5, YOLOv6, and YOLOv7.
+In 2023, YOLOv8 was released by Ultralytics [39]. Figure 5 shows the detailed architecture
+of YOLOv8. Figure 6–9 show images of the dataset.
+In the backbone architecture, the C2f module, based on Cross Stage Partial (CSP), is
+used in YOLOv8, as opposed to the C3 Module used in YOLOv5. The architecture of CSP
+enhances the learning capacity of CNN and decreases the computational effort of the model.
+The C2f module comprises two Conv Modules and n BottleNeck, connected through Split
+
+--- Page 7 ---
+Sensors 2023, 23, 5843
+7 of 14
+and Concat. The remainder of the backbone park is the same as that in YOLOv5. At the
+ﬁnal layer of the backbone, the SPPF Module is used.
+Figure 5. YOLOv8 architecture.
+Figure 6. CCTV footage from Location 1.
+Figure 7. CCTV footage from Location 2.
+Figure 8. CCTV footage from Location 3.
+
+--- Page 8 ---
+Sensors 2023, 23, 5843
+8 of 14
+Figure 9. CCTV footage from Location 4.
+3.3. Movement Tracking
+Once successfully able to detect vehicles in a parking lot, object tracking algorithms
+could be deployed to track the vehicles. Two tracking algorithms were implemented in
+the research. The ﬁrst algorithm was DeepSORT. Figure 10 shows the workﬂow of our
+algorithm. The DeepSORT algorithm was implemented to track each vehicle throughout
+the frame. DeepSORT is an extension of SORT (Simple Online Realtime Tracking) [11].
+DeepSORT uses appearance descriptors to minimize identity shifts, increasing the effec-
+tiveness of tracking. For problems involving the prediction of temporal or time series data,
+Kalman ﬁltering is the used algorithm.
+Figure 10. Workﬂow of our proposed work.
+The second tracking algorithm that was implemented was Observation-Centric SORT
+(OC-SORT) [38]. OC-SORT was published in CVPR 2023. On numerous datasets, including
+MOT17, MOT20, KITTI, head tracking, and, particularly, DanceTrack, where the object mo-
+tion is very non-linear, OC-SORT produces state-of-the-art results. To improve the accuracy
+and robustness during a period of occlusion, OC-SORT implements object observations to
+compute a virtual trajectory. Figure 11 shows the pipeline of OC-SORT.
+
+--- Page 9 ---
+Sensors 2023, 23, 5843
+9 of 14
+Figure 11. Pipeline of OC-SORT.
+3.4. Time Violation
+After successful integration of vehicle detection, followed by vehicle tracking that
+assigns a unique ID to each unique vehicle, a simple time violation algorithm was deployed
+to track every car in the frame. Every minute, the presence of the vehicle was checked.
+If the vehicle did not exist in the next 10 consecutive frames, then the ID of the vehicle was
+discarded. On the other hand, if the ID was present in 15 consecutive frames, the vehicle
+was determined to have violated the time restriction. In the ﬁgure, a blue label is associated
+with no violation, while a red label is associated with violation.
+3.5. Experimental Setup
+This section discusses the experimental platform, providing details of the in-depth
+ﬂow of the algorithm, including the chosen parameters. The workstation used for the
+experiment was Ubuntu Linux. All experiments were conducted in a 3.6 GHz Intel Xeon
+Quad-Core processor with 8GB RAM and an NVIDIA Quadro P4000 graphics card.
+A Mean Average Precision (mAP) of 53.9 was achieved by YOLOv8x, which was
+higher than all other YOLO versions. Therefore, YOLOv8x was chosen for vehicle detection.
+A pretrained model was used, as the class was already trained on the MS COCO dataset.
+The resolution of the video feed was 1080P (1920 × 1080), with a frame rate of 15 fps.
+For YOLOv8, the image-size parameter was set to 640. The model thus resized the longest
+dimension to be 640, i.e., size 1920 became 640, while maintaining the aspect ratio. Therefore,
+the resized images were close to 640 × 360. Classes were ﬁltered to be (2, 5, 7) i.e., car,
+bus, and truck, as the violation algorithm was checking for big vehicles. The conﬁdence
+threshold was set to 0.5. The probability of the class occurring in the bounding box was
+evaluated using the conﬁdence score. The maximum object detection parameter was set
+to 100.
+For tracking vehicles, DeepSORT/OC-SORT tracking algorithms were used. The max-
+age parameter was set to 10. For DeepSORT algorithm, Max Age preserves the ID of a
+vehicle for a threshold number of frames before deleting the ID. The n_init parameter was
+set to 2. The n_init parameter refers to the number of objects detected before initializing
+the tracking of the object. max_cosine_distance was set to 0.3. Max cosine distance was
+the threshold to identify vehicle similarity by the DeepSORT algorithm. The trajectory
+parameter was set to False, as the trajectory of the vehicle over time was not required.
+3.6. Validation Criteria
+Object detection algorithms such as YOLOv8 use Mean Average Precision (mAP) to
+validate the performance of object detection. Since the objective of this work was to track
+vehicles across a frame, it was essential to validate the results with an object tracking
+algorithm. MOTA (Multiple Object Tracking Algorithm) metrics were used to validate the
+results. MOTA metrics measure the accuracy of both detection and tracking algorithms.
+Firstly, it was essential to deﬁne True Positive (TP), False Positive (FP), False Negative (FN),
+and True Negative (TN). Table 2 shows the detailed deﬁnitions. The formula for MOTA is
+shown in Equation (3). FN refers to no match for the ground truth object. This can occur
+
+--- Page 10 ---
+Sensors 2023, 23, 5843
+10 of 14
+because of various reasons, such as the vehicle being too far away from the camera, weather,
+different illumination, etc. FP refers to no ground truth object but a match by the algorithm.
+There was one instance of FP where the reﬂection of the vehicle was considered as a vehicle.
+False IDs refer to identiﬁcation switches between the tracked vehicles. GT refers to total
+ground truth object.
+MOTA = 1 −∑t FNt + FPt + IDSt
+∑t GTt
+(3)
+Table 2. Deﬁnition and description of TP, TN, FP, and FN.
+Deﬁnition
+Description
+True Positive (TP)
+Vehicle is present and the algorithm can track vehicle.
+True Negative (TN)
+Vehicle is not present and the algorithm does not track vehicle
+False Positive (FP)
+Vehicle is not present but the algorithm tracks vehicle.
+False Negative (FN)
+Vehicle is present but the algorithm does not track vehicle
+4. Results and Discussion
+Figure 12 illustrates samples of vehicle detection and tracking, using YOLOv8 with
+two different object tracking algorithms across various daylight and weather settings.The
+performance of YOLOv8 with DeepSORT proved to be superior for the dataset in contrast
+to the recently introduced OC-SORT algorithm, which had exhibited notable advancements
+across numerous MOT datasets. MOTA scores of (1.0, 1.0, 0.96, 0.90) and (1, 0.76, 0.90, 0.8)
+were achieved for DeepSORT and OC-SORT tracking algorithms as shown in Table 3. The
+OC-SORT algorithm did not exhibit satisfactory results on this speciﬁc dataset. It consis-
+tently encountered challenges in maintaining consistent vehicle identiﬁcation, particularly
+in the presence of rainy conditions. The algorithm frequently switched vehicle IDs, leading
+to inaccuracies in tracking which impacted the overall performance. In Figures 13 and 14,
+the tracking of each algorithm on the Location 2 dataset can be observed. In the provided
+sample frame (f23401) from both Figures 13 and 14, it is observed that the DeepSORT
+algorithm successfully tracked the vehicle IDs, while the OC-SORT algorithm struggled to
+accurately track the IDs. The challenges faced by OC-SORT in correctly tracking the IDs
+could potentially be attributed to factors such as rainy weather conditions and the presence
+of visually similar vehicles in close proximity. These factors may have led to difﬁculties in
+distinguishing between vehicles, resulting in ID switching. The robustness of DeepSORT
+in handling such scenarios could be attributed to its utilization of deep appearance feature
+embedding, which allows for more reliable tracking, even in challenging conditions. In
+the case of Location 1, the count for False Negatives (FN) was observed to be 3 and 4 for
+DeepSORT and OC-SORT, respectively, due to the presence of reﬂections from vehicles on
+the windows. These reﬂections interfered with the vehicle detection process, causing some
+vehicles to be falsely labeled as negatives which, thus, affected the MOTA scores.
+Overall, based on the experiment conducted, it is clear that the performance of the
+vehicle tracking algorithm is greatly inﬂuenced by factors such as camera position and
+weather variation, particularly when using a single camera for inference. To achieve optimal
+tracking results, positioning the camera at or near a top-view perspective can greatly en-
+hance the performance of the vehicle tracking algorithm. This camera placement minimizes
+the occurrence of vehicle overlapping, leading to improved tracking accuracy. By capturing
+a top-down view of the monitored area, the camera can provide a clear and unobstructed
+line of sight to the vehicles, reducing the chances of them overlapping or obstructing each
+other. This unambiguous view allows the tracking algorithm to more accurately detect and
+track individual vehicles, ensuring reliable and precise tracking results. Thus, selecting a
+top-view perspective for camera placement is crucial in minimizing vehicle overlap and
+maximizing the effectiveness of the vehicle tracking algorithms.
+
+
+=== DETECTED IMAGE-BASED TABLES ===
+Caption: Table 2.
+Definition
+True Positive (TP) Vehicl
+True Negative (TN) Vehicle is
+False Positive (FP) Vehicle
+False Negative (FN) Vehicle i
+4. Results and Discussion
+
+Figure 12 illustrates samples of
+two different object tracking algorith
+performance of YOLOv8 with DeepS
+to the recently introduced OC-SORT «
+across numerous MOT datasets. MO
+were achieved for DeepSORT and OC
+OC-SORT algorithm did not exhibit
+tently encountered challenges in mai
+in the presence of rainy conditions. T
+to inaccuracies in tracking which im]
+the tracking of each algorithm on the
+sample frame (£23401) from both Fi
+algorithm successfully tracked the ve
+accurately track the IDs. The challer
+could potentially be attributed to fact
+of visually similar vehicles in close p
+distinguishing between vehicles, res
+in handling such scenarios could be a
+embedding, which allows for more
+the case of Location 1, the count for
+DeepSORT and OC-SORT, respective
+the windows. These reflections interf
+vehicles to be falsely labeled as nega‘
+Overall, based on the experime
+vehicle tracking algorithm is greatly
+weather variation, particularly when
+tracking results, positioning the cam
+hance the performance of the vehicle |
+the occurrence of vehicle overlapping
+a top-down view of the monitored a:
+line of sight to the vehicles, reducing
+other. This unambiguous view allows
+===================================
+
+--- Page 11 ---
+Sensors 2023, 23, 5843
+11 of 14
+Figure 12. Sample images of detection and tracking by our model.
+Table 3. Performance comparison of the two tracking algorithms.
+Model
+Dataset
+FP
+FN
+IDS
+MOTA
+YOLOv8 +
+DeepSORT
+Location 4
+0
+0
+0
+1
+Location 2
+0
+0
+0
+1
+Location 3
+1
+0
+0
+0.96
+Location 1
+0
+3
+0
+0.90
+YOLOv8 +
+OC-SORT
+Location 4
+0
+0
+0
+1
+Location 2
+0
+0
+7
+0.76
+Location 3
+1
+0
+2
+0.90
+Location 1
+0
+4
+1
+0.83
+Figure 13. Tracking of DeepSORT on the Location 2 dataset.
+
+
+=== DETECTED IMAGE-BASED TABLES ===
+Caption: Table 3.
+Model Dataset I
+Location 4
+YOLOv8 + Location 2
+DeepSORT Location 3
+Location 1
+Location 4
+YOLOv8 + Location 2
+OC-SORT Location 3
+Location 1
+= al a yey
+Bo aN 1 oN Ls
+( 254 J ed
+£3601 £23401
+Figure 13. Tracking of DeepSORT on the
+===================================
+
+--- Page 12 ---
+Sensors 2023, 23, 5843
+12 of 14
+Figure 14. Tracking of OC-SORT on the Location 2 dataset.
+5. Conclusions
+Manual parking time violation tracking is unideal, due to its requirements for man-
+power and high cost. In this research paper, a parking time violation tracking algorithm was
+successfully demonstrated; this has the potential to reduce additional manpower and labor
+costs. The algorithm can be implemented in many parking lot settings. The YOLOv8 algo-
+rithm was used to detect vehicles in the parking lot, while DeepSORT and OC-SORT were
+used to track the vehicles throughout the frame. For the DeepSORT algorithm, the MOTA
+scores were recorded as (1.0, 1.0, 0.96, 0.90) across four different surveillance datasets. This
+indicates a high level of accuracy and effectiveness in tracking multiple objects. On the
+other hand, the OC-SORT algorithm achieved MOTA scores of (1.0, 0.76, 0.90, 0.83) across
+the same datasets. While still achieving relatively high scores, there is a slight variation
+compared to DeepSORT, particularly in the second dataset, where the MOTA score dropped
+to 0.76 due to frequent ID switching. Overall, both algorithms showcased their ability
+to effectively track objects in the given surveillance data. These results provide valuable
+insights into the tracking performance of each algorithm and can aid in selecting the most
+suitable algorithm based on speciﬁc tracking requirements and dataset characteristics. The
+performance of the detection model might be increased by customized training of the model
+with vehicles. This is not necessary, but may help the algorithm to become more robust.
+In future studies, researchers can explore the synchronization of the algorithm with
+two or more cameras. This synchronization would enable the algorithm to detect parking
+time violations in situations where multiple CCTV cameras are deployed. By integrating
+the feeds from multiple cameras, the algorithm can gather a more comprehensive view of
+the parking lot, improving the accuracy of violation detection. This scalability is important
+for expanding the algorithm’s applicability to larger parking areas or scenarios where
+multiple cameras are already in use.
+Author Contributions: Conceptualization, N.S., S.B. and R.C.; Methodology, N.S., R.C. and S.B.;
+Validation, N.S., M.P.P. and R.C.; Analysis, S.B.; Investigation, S.B.; Resources, N.S.; Data collection,
+R.C., N.S. and S.B.; Draft Preparation, N.S.; Review and Editing, R.C., N.S. and S.B.; Visualization,
+N.S.; Supervision, R.C., S.B. and M.P.P.; Project Administration, R.C., S.B. and M.P.P. All authors have
+read and agreed to the published version of the manuscript.
+Funding: This research did not receive any external funding.
+Institutional Review Board Statement: Not applicable.
+Informed Consent Statement: Informed consent was obtained from KMITL to use the dataset for
+research purposes.
+Data Availability Statement: The data presented in the research paper are available on request, as
+they represent private parking lot data from KMITL.
+Acknowledgments: We would like to acknowledge our sincere gratitude to the ofﬁce of Information
+Technology of the School of Engineering, King Mongkut’s Institute of Technology, Ladkrabang, for
+video data.
+Conﬂicts of Interest: The authors declare no conﬂict of interests.
+
+--- Page 13 ---
+Sensors 2023, 23, 5843
+13 of 14
+References
+1.
+CEIC Flex. Thailand Number of Registered Vehicles; CEIC: Bangkok, Thailand, 2023.
+2.
+Dinh, T.; Kim, Y. A Novel Location-Centric IoT-Cloud Based On-Street Car Parking Violation Management System in Smart
+Cities. Sensors 2016, 16, 810. [CrossRef]
+3.
+Joseph, J.; Patil, R.; Narahari, S.; Didagi, Y.; Bapat, J.; Das, D. Wireless Sensor Network Based Smart Parking System. Sensors
+Transducers 2014, 162, 5–10.
+4.
+Akhawaji, R.; Sedky, M.; Soliman, A.H. Illegal Parking Detection Using Gaussian Mixture Model and Kalman Filter.
+In
+Proceedings of the 2017 IEEE/ACS 14th International Conference on Computer Systems and Applications (AICCSA), Hammamet,
+Tunisia, 30 October–3 November 2017; pp. 840–847. [CrossRef]
+5.
+Sarker, M.M.K. Detection and recognition of illegally parked vehicles based on an adaptive gaussian mixture model and a seed
+ﬁll algorithm. J. Inf. Commun. Converg. Eng. 2015, 13, 97–204. [CrossRef]
+6.
+Chin Kit, N.; Cheong, S.; Yap, W.; Foo, Y.L. Outdoor Illegal Parking Detection System Using Convolutional Neural Network on
+Raspberry Pi. Int. J. Eng. Technol. 2018, 7, 17. [CrossRef]
+7.
+Xie, X.; Wang, C.; Chen, S.; Shi, G.; Zhao, Z. Real-Time Illegal Parking Detection System Based on Deep Learning. CoRR 2017,
+abs/1710.02546. Available online: http://xxx.lanl.gov/abs/1710.02546 (accessed on 15 April 2023).
+8.
+Tang, H.; Peng, A.; Zhang, D.; Liu, T.; Ouyang, J. SSD Real-Time Illegal Parking Detection Based on Contextual Information
+Transmission. Comput. Mater. Contin. 2019, 61, 293–307. [CrossRef]
+9.
+Tamang, T.; Baral, S.; Paing, M.P. Classiﬁcation of White Blood Cells: A Comprehensive Study Using Transfer Learning Based on
+Convolutional Neural Networks. Diagnostics 2022, 12, 2903. [CrossRef]
+10.
+Girshick, R.; Donahue, J.; Darrell, T.; Malik, J. Rich Feature Hierarchies for Accurate Object Detection and Semantic Segmentation.
+2014. Available online: http://xxx.lanl.gov/abs/1311.2524 (accessed on 15 April 2023).
+11.
+Wojke, N.; Bewley, A.; Paulus, D.
+Simple Online and Realtime Tracking with a Deep Association Metric.
+CoRR 2017,
+abs/1703.07402, Available online: http://xxx.lanl.gov/abs/1703.07402 (accessed on 20 April 2023).
+12.
+Paing, M.P.; Pintavirooj, C. Adenoma Dysplasia Grading of Colorectal Polyps Using Fast Fourier Convolutional ResNet
+(FFC-ResNet). IEEE Access 2023, 11, 16644–16656. [CrossRef]
+13.
+Paing, M.P.; Cho, O.S.; Cho, J.W. Histopathological Classiﬁcation of Colorectal Polyps using Deep Learning. In Proceedings of
+the 2023 International Conference on Information Networking (ICOIN), Bangkok, Thailand, 11–14 January 2023; pp. 472–477.
+[CrossRef]
+14.
+Keakultanes, R.; Paing, M.P.; Pintavirooj, C. Automatic Cardiopulmonary Resuscitation System. In Proceedings of the 2022 14th
+Biomedical Engineering International Conference (BMEiCON), Songkhla, Thailand, 10–13 November 2022; pp. 1–5. [CrossRef]
+15.
+Janai, J.; Güney, F.; Behl, A.; Geiger, A. Computer Vision for Autonomous Vehicles: Problems, Datasets and State-of-the-Art. arXiv
+2017, arXiv:1704.05519. Available online: http://xxx.lanl.gov/abs/1704.05519 (accessed on 15 April 2023).
+16.
+Zhao, Z.Q.; Zheng, P.; tao Xu, S.; Wu, X. Object Detection with Deep Learning: A Review. 2019. Available online: http:
+//xxx.lanl.gov/abs/1807.05511 (accessed on 29 April 2023).
+17.
+Redmon, J.; Divvala, S.; Girshick, R.; Farhadi, A. You Only Look Once: Uniﬁed, Real-Time Object Detection. 2016. Available
+online: http://xxx.lanl.gov/abs/1506.02640 (accessed on 15 April 2023).
+18.
+Liu, W.; Anguelov, D.; Erhan, D.; Szegedy, C.; Reed, S.; Fu, C.Y.; Berg, A.C. SSD: Single Shot MultiBox Detector. In Computer
+Vision – ECCV 2016; Springer International Publishing: Berlin/Heidelberg, Germany, 2016; pp. 21–37. [CrossRef]
+19.
+Mao, Q.C.; Sun, H.M.; Liu, Y.B.; Jia, R.S. Mini-YOLOv3: Real-Time Object Detector for Embedded Applications. IEEE Access 2019,
+7, 133529–133538. [CrossRef]
+20.
+Dan, N. Parking Management System and Methods. U.S. Patent 10/066,215, 31 July 2003.
+21.
+Huang, C.C.; Tai, Y.S.; Wang, S.J. Vacant Parking Space Detection Based on Plane-Based Bayesian Hierarchical Framework. IEEE
+Trans. Circuits Syst. Video Technol. 2013, 23, 1598–1610. [CrossRef]
+22.
+Menéndez, J.M.; Postigo, C.; Torres, J. Vacant parking area estimation through background subtraction and transience map
+analysis. IET Intell. Transp. Syst. 2015, 9, 835–841. [CrossRef]
+23.
+Patel, R.; Meduri, P. Car detection based algorithm for automatic parking space detection. In Proceedings of the 2020 19th
+IEEE International Conference on Machine Learning and Applications (ICMLA), Miami, FL, USA, 14–17 December 2020; pp.
+1418–1423.
+24.
+Grbi´c, R.; Koch, B. Automatic vision-based parking slot detection and occupancy classiﬁcation. Expert Syst. Appl. 2023, 225,
+120147. [CrossRef]
+25.
+de Almeida, P.R.L.; Oliveira, L.S.; Britto, A.S., Jr.; Silva, E.J., Jr.; Koerich, A.L. PKLot—A Robust Dataset for Parking Lot
+Classiﬁcation. Expert Syst. Appl. 2015, 42, 4937–4949. [CrossRef]
+26.
+Amato, G.; Carrara, F.; Falchi, F.; Gennaro, C.; Meghini, C.; Vairo, C. Deep learning for decentralized parking lot occupancy
+detection. Expert Syst. Appl. 2017, 72, 327–334. [CrossRef]
+27.
+Chen, Z.; Guo, H.; Yang, J.; Jiao, H.; Feng, Z.; Chen, L.; Gao, T. Fast vehicle detection algorithm in trafﬁc scene based on improved
+SSD. Measurement 2022, 201, 111655. [CrossRef]
+28.
+Li, Y.; Chen, Y.; Yuan, S.; Liu, J.; Zhao, X.; Yang, Y.; Liu, Y. Vehicle detection from road image sequences for intelligent trafﬁc
+scheduling. Comput. Electr. Eng. 2021, 95, 107406. [CrossRef]
+
+--- Page 14 ---
+Sensors 2023, 23, 5843
+14 of 14
+29.
+Jung, H.; Choi, M.K.; Jung, J.; Lee, J.H.; Kwon, S.; Jung, W.Y. ResNet-Based Vehicle Classiﬁcation and Localization in Trafﬁc
+Surveillance Systems. In Proceedings of the 2017 IEEE Conference on Computer Vision and Pattern Recognition Workshops
+(CVPRW), Honolulu, HI, USA, 21–26 July 2017; pp. 934–940. [CrossRef]
+30.
+Luo, W.; Xing, J.; Milan, A.; Zhang, X.; Liu, W.; Kim, T.K. Multiple object tracking: A literature review. Artif. Intell. 2021,
+293, 103448. [CrossRef]
+31.
+Sun, Z.; Chen, J.; Chao, L.; Ruan, W.; Mukherjee, M. A Survey of Multiple Pedestrian Tracking Based on Tracking-by-Detection
+Framework. IEEE Trans. Circuits Syst. Video Technol. 2021, 31, 1819–1833. [CrossRef]
+32.
+Hou, X.; Wang, Y.; Chau, L.P. Vehicle Tracking Using Deep SORT with Low Conﬁdence Track Filtering. In Proceedings of the 2019
+16th IEEE International Conference on Advanced Video and Signal Based Surveillance (AVSS), Taipei, Taiwan, 18–21 September
+2019; pp. 1–6. [CrossRef]
+33.
+Buric, M.; Ivasic-Kos, M.; Pobar, M. Player Tracking in Sports Videos. In Proceedings of the 2019 IEEE International Conference
+on Cloud Computing Technology and Science (CloudCom), Sydney, Australia, 11–23 December 2019; pp. 334–340. [CrossRef]
+34.
+Parico, A.I.B.; Ahamed, T. Real Time Pear Fruit Detection and Counting Using YOLOv4 Models and Deep SORT. Sensors 2021, 21,
+4803. [CrossRef]
+35.
+Liu, T.; Liu, Y. Deformable Model-Based Vehicle Tracking and Recognition Using 3-D Constrained Multiple-Kernels and Kalman
+Filter. IEEE Access 2021, 9, 90346–90357. [CrossRef]
+36.
+Bewley, A.; Ge, Z.; Ott, L.; Ramos, F.; Upcroft, B. Simple Online and Realtime Tracking. arXiv 2016, arXiv:1602.00763. Available
+online: http://xxx.lanl.gov/abs/1602.00763 (accessed on 15 April 2023).
+37.
+Zhang, Y.; Sun, P.; Jiang, Y.; Yu, D.; Weng, F.; Yuan, Z.; Luo, P.; Liu, W.; Wang, X. ByteTrack: Multi-Object Tracking by Associating
+Every Detection Box. 2022. Available online: http://xxx.lanl.gov/abs/2110.06864 (accessed on 10 May 2023).
+38.
+Cao, J.; Pang, J.; Weng, X.; Khirodkar, R.; Kitani, K. Observation-Centric SORT: Rethinking SORT for Robust Multi-Object Tracking,
+2023. Available online: http://xxx.lanl.gov/abs/2203.14360 (accessed on 10 May 2023).
+39.
+Jocher, G.; Chaurasia, A.; Qiu, J. YOLO by Ultralytics. 2023. Available online: https://github.com/ultralytics/ultralytics
+(accessed on 23 May 2023).
+40.
+Redmon, J.; Farhadi, A. YOLO9000: Better, Faster, Stronger. CoRR 2016, abs/1612.08242, Available online: http://xxx.lanl.gov/
+abs/1612.08242 (accessed on 10 May 2023).
+41.
+Redmon, J.; Farhadi, A. YOLOv3: An Incremental Improvement. CoRR 2018, abs/1804.02767, Available online: http://xxx.lanl.
+gov/abs/1804.02767 (accessed on 12 May 2023).
+Disclaimer/Publisher’s Note: The statements, opinions and data contained in all publications are solely those of the individual
+author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to
+people or property resulting from any ideas, methods, instructions or products referred to in the content.
+
+
+--- PROCESSING SUMMARY ---
+Total Tables Detected: 3
+Image-Based Tables Extracted: 3
+Issues/Errors: 0
+Processing Date: 2026-02-23 14:46:53
+
+
+=== STANDARDIZED MARKDOWN TABLES ===
+
+No standardized tables available.
